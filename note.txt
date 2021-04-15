@@ -1,0 +1,8 @@
+1.调试GB28181设备端语音对讲时，设备收到Broadcast,发起Invite后，对端Bye时，osip回复481问题，未找到匹配的会话，经调试修改osip2中osip_dialog.c osip_dialog_match_as_uas最后增加如下：
+ if(0==strcmp(request->cseq->method,"BYE"))//zuozp
+  {
+     if (0 == strcmp (tag_param_remote->gvalue, dlg->local_tag)){
+        return OSIP_SUCCESS;
+     }
+  }
+  Invite由本地发起，对端挂断是from字段与Invite字段相同，为设备端的tag，故而需与local_tag做匹配
